@@ -1,0 +1,189 @@
+﻿<script src="https://hhhhteams.sharepoint.com/sites/HHHHTeams/Style%20Library/js/angular/Templates/HCTemplateControllers.js?updated=23-03-2019"></script>
+<script src="https://hhhhteams.sharepoint.com/sites/HHHHTeams/Style%20Library/js/angular/ComponentsTaggedReports/ShowAllTask-Test.js?updated=07-09-2019"></script>
+<script src="https://hhhhteams.sharepoint.com/sites/HHHHTeams/Style%20Library/js/angular/Services/alasql.min.js"></script>
+<script src="https://hhhhteams.sharepoint.com/sites/HHHHTeams/Style%20Library/js/angular/Templates/EditTaskManagement.js"></script>
+<style>
+</style>
+<div ng-controller="ComponentsTaggedReportsController" ng-cloak class="report">
+
+
+    <div id="showSearchBox" class="col-sm-12 padL-0 PadR0">
+        <div class="col-sm-11 padL-0 form-group" style="width:1238px;">
+            <input id="searchinput" type="search" ng-model="globalSearch" placeholder="Search all..." class="searchhbox_height t form-control searchbox_height">
+            <span class="searchclear" ng-click="clearControl('searchinput')">X</span>
+            <div class="clearfix"></div>
+        </div>
+        <div class="col-sm-1" style="width:61px;">
+            <img class="pull-right hreflink" src="{{baseUrl}}/SiteCollectionImages/ICONS/24/icon_excel.png" ng-click="exportToExcelPopup()">
+        </div>
+        <div class="col-sm-12 padL-0 PadR0">
+            <div id="table-wrapper-institution" class="section-event">
+
+                <div class="container-new">
+                    <table id="contact" class="table table-hover SAP-Project" cellspacing="0">
+                        <thead>
+                            <tr>
+
+
+                                <th style="width: 10%;">
+                                    <div style="width: 8%">
+                                        <input id="searchDueDate" type="text" placeholder="Search Title" class="form-control searchbox_height" ng-model="searchSiteName" />
+                                        <span class="searchclear" ng-click="clearControl('searchDueDate')">X</span>
+                                        <span class="{{orderBy=='sitName'&&!reverse?'glyphicon_active':'glyphicon'}}  glyphicon-chevron-up direction-arrow arrow_up" ng-click="sortBy('sitName', false)"></span>
+                                        <span class="{{orderBy=='sitName'&&reverse?'glyphicon_active':'glyphicon'}}  glyphicon-chevron-down direction-arrow arrow_down" ng-click="sortBy('sitName', true)"></span>
+
+                                    </div>
+                                </th>
+                                <th style="width: 25%;">
+                                    <div style="width: 20%">
+                                        <input id="searctitle" type="text" placeholder="Search Title" class="form-control searchbox_height" ng-model="searchTitle" />
+                                        <span class="searchclear" ng-click="clearControl('searchDueDate')">X</span>
+                                        <span class="{{orderBy=='Title'&&!reverse?'glyphicon_active':'glyphicon'}}  glyphicon-chevron-up direction-arrow arrow_up" ng-click="sortBy('Title', false)"></span>
+                                        <span class="{{orderBy=='Title'&&reverse?'glyphicon_active':'glyphicon'}}  glyphicon-chevron-down direction-arrow arrow_down" ng-click="sortBy('Title', true)"></span>
+
+                                    </div>
+                                </th>
+                                <th style="width: 12%;">
+                                    <div style="width: 12%">
+                                        <input id="searchTimeSpent" type="text" placeholder="Search SpentTime" class="form-control searchbox_height" ng-model="searchTimeSpent" />
+                                        <span class="searchclear" ng-click="clearControl('searchEffort')">X</span>
+                                        <span class="{{orderBy=='TotalspentTime'&&!reverse?'glyphicon_active':'glyphicon'}}  glyphicon-chevron-up direction-arrow arrow_up" ng-click="sortBy('TotalspentTime', false)"></span>
+                                        <span class="{{orderBy=='TotalspentTime'&&reverse?'glyphicon_active':'glyphicon'}}  glyphicon-chevron-down direction-arrow arrow_down" ng-click="sortBy('TotalspentTime', true)"></span>
+
+                                    </div>
+                                </th>
+
+                                <th style="width: 12%;">
+                                    <div style="width: 12%">
+                                        <input id="searchEffort" type="text" placeholder="Search TaskTime" class="form-control searchbox_height" ng-model="searchTasktime" />
+                                        <span class="searchclear" ng-click="clearControl('searchEffort')">X</span>
+                                        <span class="{{orderBy=='TotalTaskTime'&&!reverse?'glyphicon_active':'glyphicon'}}  glyphicon-chevron-up direction-arrow arrow_up" ng-click="sortBy('TotalTaskTime', false)"></span>
+                                        <span class="{{orderBy=='TotalTaskTime'&&reverse?'glyphicon_active':'glyphicon'}}  glyphicon-chevron-down direction-arrow arrow_down" ng-click="sortBy('TotalTaskTime', true)"></span>
+
+                                    </div>
+                                </th>
+                                <th style="width: 2%;">
+                                    <div style="width: 2%">
+
+                                    </div>
+                                </th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="report in FilteredComponents=(totalTaggedTask |filter:{sitName :searchSiteName,Title:searchTitle,TimeSpent:searchTimeSpent, TaskTime:searchTasktime,count:searchCount })" style="width:100%">
+
+                                <td style="width: 10%;">{{report.sitName}}</td>
+
+                                <td style="width: 20%;">{{report.Title}}</td>
+                                <td style="width: 10%;">{{report.TotalspentTime}}<span ng-show="report.count>0">({{report.count}})</span></td>
+
+                                <td style="width: 10%;">{{report.TotalTaskTime}}<span ng-show="report.countTask>0">({{report.countTask}})</td>
+
+                                <td style="width:2%;" class="">
+                                    <a class="hreflink" title="Edit" data-toggle="modal" ng-click="EditTask(report)"><img class="img-focus" ng-src="/_layouts/images/edititem.gif" src="/_layouts/images/edititem.gif"> </a>
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div id="SmartTimeComaprepopup" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content" style="width:1150px; margin-left: -255px;">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" ng-click="cancelTimePopup()" style="min-width: 10px;">&times;</button>
+                    <h4 class="modal-title">
+                        Time Compare-   <a class="hreflink" target="_blank" ng-href="https://hhhhteams.sharepoint.com/sites/HHHHTeams/sp/SitePages/Task-Profile.aspx?taskId={{CompareItem.Id}}&Site={{CompareItem.sitName}}">
+                            {{CompareItem.Title}}
+                        </a>
+                    </h4>
+
+                </div>
+                <div class="modal-body">
+                    <div class="col-sm-12 tab-content bdrbox padL-0 PadR0 mb-10 mt-10">
+                        <div class="col-sm-6 mb-10 mt-10">
+                          JSON Task Time Sheet
+                            <div class="col-sm-12 bdrbox table_scroll" ng-if="JsonTimeSpendTasks.length>0">
+                                <div class="tdrow  DashboardpublicationItem padL-0" ng-repeat="item in JsonTimeSpendTasks|orderBy:'TaskTime':true">
+                                    <div class="col-sm-12 mt-10 mb-10">
+                                        <div class="col-sm-1 padL-0 PadR0">
+                                            <img style="width:100%;" title="{{item.AuthorName}}" data-toggle="popover" data-trigger="hover" ng-src="{{item.AuthorImage}}">
+                                            <div class="mt-5 text-center">
+                                                <!--<a class="hreflink" ng-click="EdittaskTime(item);"><img ng-src="https://hhhhteams.sharepoint.com/sites/HHHHTeams/SiteCollectionImages/ICONS/32/edititem.gif"></a>
+                                                <a class="hreflink" title="Delete" ng-click="Delettasktime(item)"><img ng-src="https://hhhhteams.sharepoint.com/sites/HHHHTeams/SiteCollectionImages/ICONS/32/delete.gif"></a>-->
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-11">
+                                            <div class="involve_actor">
+                                                <div class="tmvalue impact-infoV">Date</div>
+                                                <div class="tlvalue impact-infoII"><span>{{item.TaskDate}}</span></div>
+                                            </div>
+                                            <div class="involve_actor">
+                                                <div class="tmvalue impact-infoV">Time</div>
+                                                <div class="tlvalue impact-infoII"><span>{{item.TaskTime}}</span></div>
+                                            </div>
+                                            <div class="involve_actor">
+                                                <div class="tmvalue impact-infoV">Description</div>
+                                                <div class="tlvalue impact-infoII"><span>{{item.Description}}</span></div>
+                                            </div>
+                                            <div class="pull-right">
+                                                <button type="button" class="btn btn-primary" ng-click="AddTaskRecords(item)">Copy</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-sm-6 mb-10 mt-10">
+                            Task Time Sheet
+                            <div class="col-sm-12 bdrbox table_scroll" ng-if="TaskTimeSpendTasks.length>0">
+                                <div class="tdrow  DashboardpublicationItem padL-0" ng-repeat="item in TaskTimeSpendTasks|orderBy:'TaskTime':true">
+                                    <div class="col-sm-12 mt-10 mb-10">
+                                        <div class="col-sm-1 padL-0 PadR0">
+                                            <img style="width:100%;" title="{{item.AuthorName}}" data-toggle="popover" data-trigger="hover" ng-src="{{item.AuthorImage}}">
+                                            <div class="mt-5 text-center">
+                                                <!--<a class="hreflink" ng-click="EdittaskTime(item);"><img ng-src="https://hhhhteams.sharepoint.com/sites/HHHHTeams/SiteCollectionImages/ICONS/32/edititem.gif"></a>-->
+                                                <a class="hreflink" title="Delete" ng-click="Delettasktime(item)"><img ng-src="https://hhhhteams.sharepoint.com/sites/HHHHTeams/SiteCollectionImages/ICONS/32/delete.gif"></a>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-11">
+                                            <div class="involve_actor">
+                                                <div class="tmvalue impact-infoV">Date</div>
+                                                <div class="tlvalue impact-infoII"><span>{{item.TaskDate}}</span></div>
+                                            </div>
+                                            <div class="involve_actor">
+                                                <div class="tmvalue impact-infoV">Time</div>
+                                                <div class="tlvalue impact-infoII"><span>{{item.TaskTime}}</span></div>
+                                            </div>
+                                            <div class="involve_actor">
+                                                <div class="tmvalue impact-infoV">Description</div>
+                                                <div class="tlvalue impact-infoII"><span>{{item.Description}}</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>

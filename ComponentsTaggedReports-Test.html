@@ -1,0 +1,300 @@
+﻿<script src="https://hhhhteams.sharepoint.com/sites/HHHHTeams/Style%20Library/js/angular/Templates/HCTemplateControllers.js?updated=23-03-2019"></script>
+<script src="https://hhhhteams.sharepoint.com/sites/HHHHTeams/Style%20Library/js/angular/ComponentsTaggedReports/ComponentsTaggedReports-Test.js?updated=07-09-2019"></script>
+<script src="https://hhhhteams.sharepoint.com/sites/HHHHTeams/Style%20Library/js/angular/Services/alasql.min.js"></script>
+<style>
+
+</style>
+<div ng-controller="ComponentsTaggedReportsController" ng-cloak class="report">
+    <ng-form name="ItemForm" novalidate role="form">
+        <div class="form-group">
+            <div class="col-sm-4 padL-0">
+                <label class="full_width" ng-bind-html="GetColumnDetails('StartDate') | trustedHTML"></label>
+                <select ng-required="true" id="startmonth" name="month" ng-model="StartMonth" class="form-control select col-sm-6">
+                    <option ng-repeat="month in months" value="{{month.value}}" ng-selected="{{month.Selected}}">{{month.text}}</option>
+                </select>
+           
+                <select ng-required="true" id="startyear" name="year" ng-model="StartYear" class="form-control select col-sm-5 ml5" >
+                    <option ng-repeat="year in years" value="{{year.value}}">{{year.value}}</option>
+                </select>
+            </div>
+            <div class="col-sm-4 padL-0">
+                <label ng-required="true" class="full_width" ng-bind-html="GetColumnDetails('EndDate') | trustedHTML"></label>
+                <select id="endmonth" name="month" ng-model="EndMonth" class="form-control  select col-sm-6">
+                    <option ng-repeat="month in months" value="{{month.value}}">{{month.text}}</option>
+                </select>
+                <select ng-required="true" id="endyear" name="year" ng-model="EndYear" class="form-control  select col-sm-5 ml5">
+                    <option ng-repeat="year in years" value="{{year.value}}">{{year.value}}</option>
+                </select>
+            </div>
+            <div class="col-sm-2 padL-0 PadR0 general-option" style="width:270px;">
+			<fieldset class="fieldsett">
+                <legend ng-bind-html="GetColumnDetails('Sites') | trustedHTML"></legend>
+                <div class="col-sm-6 mb-10" ng-repeat="item in SiteDetails">
+                    <input type="checkbox" ng-click="editSite(item)"  ng-model="item.Selected" name="site">
+                    {{item.Title}}
+
+                </div>
+			</fieldset>	
+            </div>
+			  <div class="col-sm-2 padL-0 PadR0 " style="width:158px;">
+			   <label class="full_width"></label>
+				<button type="button" ng-disabled="ItemForm.$error.required || isButtonEnabled" class="btn btn-primary pull-right" ng-click="generateReports()">Generate Reports</button>
+			  </div>
+            <div class="clearfix"></div>
+        </div>
+      
+    </ng-form>
+
+
+    <div id="showSearchBox" class="col-sm-12 padL-0 PadR0">
+        <div class="col-sm-11 padL-0 form-group" style="width:1238px;">
+            <input id="searchinput" type="search" ng-model="globalSearch" placeholder="Search all..." class="searchhbox_height t form-control searchbox_height">
+            <span class="searchclear" ng-click="clearControl('searchinput')">X</span>
+            <div class="clearfix"></div>
+        </div>
+        <div class="col-sm-1" style="width:61px;">
+            <img class="pull-right hreflink" src="{{baseUrl}}/SiteCollectionImages/ICONS/24/icon_excel.png" ng-click="exportToExcelPopup()">
+        </div>
+        <div class="col-sm-12 padL-0 PadR0">
+        <div id="table-wrapper-institution" class="section-event">
+		
+            <div class="container-new">
+                <table id="contact" class="table table-hover SAP-Project" cellspacing="0">
+                    <thead>
+                        <tr>
+
+
+                            <th style="width: 1%"><div style="width: 1%"></div></th>
+                            <th style="width: 59%;">
+                                <div style="width: 66%">
+                                    <input id="searchTitle" type="text" placeholder="Search Title" class="form-control searchbox_height" ng-model="searchTitle" />
+                                    <span class="searchclear" ng-click="clearControl('searchTitle')">X</span>
+                                    <span class="{{orderBy=='Title'&&!reverse?'glyphicon_active':'glyphicon'}}  glyphicon-chevron-up direction-arrow arrow_up" ng-click="sortBy('Title', false)"></span>
+                                    <span class="{{orderBy=='Title'&&reverse?'glyphicon_active':'glyphicon'}}  glyphicon-chevron-down direction-arrow arrow_down" ng-click="sortBy('Title', true)"></span>
+
+                                </div>
+                            </th>
+                            <th style="width: 10%;">
+                                <div style="width: 10%">
+                                    <input id="searchDueDate" type="text" placeholder="Search DueDate" class="form-control searchbox_height" ng-model="searchDueDate" />
+                                    <span class="searchclear" ng-click="clearControl('searchDueDate')">X</span>
+                                    <span class="{{orderBy=='CompletedDate'&&!reverse?'glyphicon_active':'glyphicon'}}  glyphicon-chevron-up direction-arrow arrow_up" ng-click="sortBy('CompletedDate', false)"></span>
+                                    <span class="{{orderBy=='CompletedDate'&&reverse?'glyphicon_active':'glyphicon'}}  glyphicon-chevron-down direction-arrow arrow_down" ng-click="sortBy('CompletedDate', true)"></span>
+
+                                </div>
+                            </th>
+                            <th style="width: 10%;">
+                                <div style="width: 10%">
+                                    <input id="searchEffort" type="text" placeholder="Search Effort" class="form-control searchbox_height" ng-model="searchEffort" />
+                                    <span class="searchclear" ng-click="clearControl('searchEffort')">X</span>
+                                    <span class="{{orderBy=='Effort'&&!reverse?'glyphicon_active':'glyphicon'}}  glyphicon-chevron-up direction-arrow arrow_up" ng-click="sortBy('Effort', false)"></span>
+                                    <span class="{{orderBy=='Effort'&&reverse?'glyphicon_active':'glyphicon'}}  glyphicon-chevron-down direction-arrow arrow_down" ng-click="sortBy('Effort', true)"></span>
+
+                                </div>
+                            </th>
+
+
+                            <th style="width:6%"><div style="width: 2%"></div></th>
+                          
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat-start="report in FilteredComponents = (ReportComponentsItems | treeStrucureFiltering: globalSearch  | orderBy:orderBy:reverse | treeStrucureFiltering:{Title:searchTitle,CompletedDate:searchDueDate,Effort:searchEffort})" style="width:100%">
+                            <td>
+                                <span ng-show="!report.expanded && report.childs.length>0" class="hreflink" ng-click="toggleGroup(report);">
+                                    <img ng-src="{{baseUrl}}/SiteCollectionImages/ICONS/24/right-list-icon.png">
+                                </span>
+                                <span ng-show="report.expanded && report.childs.length>0" class="hreflink" ng-click="toggleGroup(report);">
+                                    <img ng-src="{{baseUrl}}/SiteCollectionImages/ICONS/24/list-icon.png">
+                                </span>
+                            </td>
+
+                            <td>
+
+                                <span style="width: 30%;" ng-if="report.childs!=undefined">
+                                    <span class="hreflink">
+                                        {{report.Title}} <span ng-hide="filteredItems.length=='0'">({{filteredItems.length}})</span>
+                                    </span>
+                                </span>
+
+                                <span style="width: 30%;" ng-if="report.childs==undefined">
+                                    <a ng-href="{{report.component_x0020_link.Url}}" class="Report-title " target="_blank">
+
+                                        <span ng-if="report.editable != true">{{report.Title}}</span>
+
+                                    </a>
+									<div class="project-tool">
+										<img  src="{{baseUrl}}/SiteCollectionImages/ICONS/24/infoIcon.png"/>
+									
+									  <span class="tooltipte" ng-if="report.FeedBackDescriptionsBody[0].FeedBackDescriptions.length>0">
+											<span class="tooltiptext">
+												<!-- <p class="tooltiptitle">{{item.Title}}</p> -->
+												<div class="tooltip_Desc" ng-repeat="item in report.FeedBackDescriptionsBody[0].FeedBackDescriptions">
+		
+                                                   <span ng-bind-html="item.Title | trustedHTML"></span>
+                                
+												</div>
+											
+											</span>
+									  </span>
+									  </div>
+									<div class="col-sm-11 padL-0 PadR0"><input ng-if="report.editable == true" class="form-control" ng-model="report['Title']" type="text" /></div>
+                                    <div class="col-sm-1 no-padding"><span ng-if="report.TaskItems.length>0" title="Show Description"> <img src="{{baseUrl}}/SiteCollectionImages/ICONS/24/infoIcon.png" ng-click="showDescription(report)"></span></div>
+                                </span>
+
+                            </td>
+                            <td>{{report.CompletedDate}}</td>
+                            <td>{{report.Effort}}</td>
+
+                            <td>
+                                <span ng-if="report.Name != 'Designs' && report.Name != 'Bugs'">
+                                    <a ng-if="report.childs==undefined && report.editable != true" class="hreflink" title="Edit Inline" ng-click="EditContents(report)">
+                                        <img src="{{baseUrl}}/SiteCollectionImages/ICONS/32/icon_inline.png">
+                                    </a>
+                                    <a ng-if="report.childs==undefined" class="hreflink ng-scope no-padding" title="Edit" data-toggle="modal" ng-click="EditTask(report)"><img class="img-focus" ng-src="/_layouts/images/edititem.gif" src="/_layouts/images/edititem.gif"> </a>
+
+                                    <a ng-if="report.editable == true" class="hreflink" title="Save" ng-click="SaveItem(report)">
+                                        <img class="wid22" src="{{baseUrl}}/SiteCollectionImages/ICONS/32/save.png">
+                                    </a>
+
+                                    <a ng-if="report.editable == true" class="hreflink" title="Cancel" ng-click="CancelItem(report)">
+                                        <img class="wid22" src="{{baseUrl}}/SiteCollectionImages/ICONS/32/cancel.png">
+
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr ng-show="report.expanded && report.childs.length>0" ng-repeat-end>
+                            <td class="phase-td" colspan="11">
+                                <table class="table table-hover phase" width="100%">
+                                    <tr class="tdrow form-goup" ng-repeat="item in filteredItems=(report.childs |  filter: globalSearch |orderBy:orderBy:reverse )">
+                                        <td style="width:1%;">
+                                        </td>
+
+                                        <td style="width:57%;">
+                                            <span>
+                                                <a ng-href="{{item.component_x0020_link.Url}}" class="Report-title " target="_blank">
+
+                                                    <span ng-if="item.editable != true">{{item.Title}}</span>
+
+                                                </a> 
+												<!-- <span ng-if="item.Body!=undefined && item.editable != true" title="Show Description"> <img src="{{baseUrl}}/SiteCollectionImages/ICONS/24/infoIcon.png" ng-click="showDescription(item)"></span> -->
+													<div class="project-tool" ng-if="item.Body!=undefined && item.editable != true" title="Show Description">
+										<img  src="{{baseUrl}}/SiteCollectionImages/ICONS/24/infoIcon.png"/>
+									
+									  <span class="tooltipte" ng-if="item.FeedBackDescriptionsBody[0].FeedBackDescriptions.length>0">
+											<span class="tooltiptext">
+											<span class="icon"></span>
+												<!-- <p class="tooltiptitle">{{item.Title}}</p> -->
+												<div class="tooltip_Desc" ng-repeat="item1 in item.FeedBackDescriptionsBody[0].FeedBackDescriptions">
+		
+                                                   <span ng-bind-html="item1.Title | trustedHTML"></span>
+                                
+												</div>
+											
+											</span>
+									  </span>
+									  </div>
+												  <div class="col-sm-11 padL-0 PadR0"> <input ng-if="item.editable == true" class="form-control" ng-model="item['Title']" type="text" /></div>
+												  <div class="col-sm-1 no-padding"> <span ng-if="item.Body!=undefined && item.editable == true" title="Show Description"> <img src="{{baseUrl}}/SiteCollectionImages/ICONS/24/infoIcon.png" ng-click="showDescription(item)"></span></div>
+                                            </span>
+                                        </td>
+                                        
+                                        <td style="width:9%;" ng-bind="item.CompletedDate"></td>
+                                       <td style="width:9%;" ng-bind="item.Effort"></td>
+                                        <td class="icontype display_hide" style="width:6%;">
+                                            <span>
+                                                <a ng-if="item.editable != true" class="hreflink" title="Edit Inline" ng-click="EditContents(item)">
+                                                    <img src="{{baseUrl}}/SiteCollectionImages/ICONS/32/icon_inline.png">
+                                                </a>
+                                                <a class="hreflink ng-scope" title="Edit" data-toggle="modal" ng-click="EditTask(item)"><img class="img-focus" ng-src="/_layouts/images/edititem.gif" src="/_layouts/images/edititem.gif"> </a>
+
+                                                <a ng-if="item.editable == true" class="hreflink" title="Save" ng-click="SaveItem(item)">
+                                                    <img class="wid22" src="{{baseUrl}}/SiteCollectionImages/ICONS/32/save.png">
+                                                </a>
+
+                                                <a ng-if="item.editable == true" class="hreflink" title="Cancel" ng-click="CancelItem(item)">
+                                                    <img class="wid22" src="{{baseUrl}}/SiteCollectionImages/ICONS/32/cancel.png">
+
+                                                </a>
+                                            </span>
+                                        </td>
+
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+       
+		</div>
+    </div>
+    <div id="exportToexcelpopupdata" class="modal" role="dialog">
+        <div class="modal-dialog">
+            <div class="panel panel-default">
+                <ng-form name="createContactForm" novalidate role="form">
+                    <div class="panel-title">
+                        <h3>
+                            <img class="wid22" ng-if="Item.Attachments" ng-src="{{baseUrl}}/admin/Lists/Contacts/Attachments/{{Item.Id}}/ContactPicture.jpg" />
+                            Export To Excel
+                            <button type="button" class="close minwid-10" ng-click="cancelexportToExcelPopup()" >&times;</button>
+                        </h3>
+                    </div>
+                    <div class="modal-body tab-content">
+                        <div class="col-sm-12 padL-0 PadR0">
+                            <div ng-repeat="item in exportcolumns">
+                                <div class="col-sm-6">
+                                    <div class="col-sm-12 checkbox">
+                                        <label class="ng-binding">
+                                            <input id="chkCompareContact_{{item.Id}}" type="checkbox" ng-model="item.isChecked" name="chkContact" ng-click=checkexportcolumn(item) />
+                                            {{item.DisplayName}}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <span class="pull-right">
+                            <button type="button" class="btn btn-primary" ng-click="exportToExcel()">Save</button>
+                            <button type="button" class="btn btn-default" ng-click="cancelexportToExcelPopup()">Cancel</button>
+                        </span>
+                    </div>
+                </ng-form>
+            </div>
+        </div>
+    </div>
+
+  
+    <div id="showDescriptionPopup" class="modal fade in disnone" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+        <div class="modal-dialog">
+            <div class="panel panel-default">
+                <div class="panel-title">
+                    <button type="button" class="close minwid-10" data-dismiss="modal" ng-click="closeDescriptionPopup()" >&times;</button>
+                    <h3 class="modal-title">
+                        {{ItemDetails.Title}}
+                    </h3>
+
+                </div>
+                <div class="modal-body tab-content imageinfo_border bdrtop">
+				<div class="col-sm-12 panel-padding no-padding">
+                    <div class="col-sm-12 panel-padding" ng-if="ItemDetails.FeedBackDescriptionsBody==0"> <span ng-bind-html="ItemDetails.Body | trustedHTML"></span></div>
+                    <div ng-if="ItemDetails.FeedBackDescriptionsBody[0].FeedBackDescriptions.length>0" ng-repeat="item in ItemDetails.FeedBackDescriptionsBody[0].FeedBackDescriptions">
+                            <div class="col-sm-12 Description_item">
+                              
+                                    <span ng-bind-html="item.Title | trustedHTML"></span>
+                                
+							</div>
+                    </div>
+                </div>
+				</div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-primary" ng-click="closeDescriptionPopup()" title="Close">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

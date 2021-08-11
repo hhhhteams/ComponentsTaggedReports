@@ -1,0 +1,31 @@
+﻿<style>
+    #pageTitle a {
+        display: none !important;
+    }
+
+    #contentRow {
+        padding-top: 0px !important;
+        margin-top: -15px;
+    }
+</style>
+
+<div ng-cloak class="report">
+    <div>
+        <h1 class="blue-clr">TimeReport </h1>
+    </div>
+    <ng-form name="ItemForm" novalidate role="form">
+
+        <div class="form-group">
+            <div class="col-sm-3 padL-0">
+                <label class="full_width" ng-bind-html="GetColumnDetails('StartDate') | trustedHTML"></label>
+                <input type="text" ng-required="true" id="txtReportDatetime" ng-model="ReportDatetime" />
+            </div>
+            <div class="col-sm-2 padL-0 PadR0 " style="width:158px;">
+                <label class="full_width"></label>
+                <button type="button" ng-disabled="ItemForm.$error.required || isButtonEnabled" class="btn btn-primary pull-right" ng-click="generateReport()">Generate Reports</button>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+
+    </ng-form>
+</div>
